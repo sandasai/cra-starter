@@ -52,6 +52,10 @@ const numericCompareFilter = (persons: Person[], attribute: keyof Person, value:
 
 const stringCompareFilter = (persons: Person[], attribute: keyof Person, value: string) => {
   return persons.filter(person => {
+    if (typeof attribute === 'string') {
+      const personAttributeValue = person[attribute] as string
+      return personAttributeValue.includes(value)
+    }
     return person[attribute] === value
   })
 }
@@ -72,7 +76,6 @@ function App() {
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const { register, errors, handleSubmit } = useForm()
-
   useEffect(() => {
     async function fetchPeople() {
       const localStoragePeople = localStorage.getItem(PeopleLocalStorageKey)
@@ -102,8 +105,6 @@ function App() {
 
     fetchPeople()
   }, [])
-
-  console.log(getOptionsForAttribute(people, 'hair_color'))
 
   function handleFormSubmit(formData: any, e: any) {
     e.preventDefault()
@@ -174,13 +175,13 @@ function App() {
         >
           <thead>
             <tr>
-              <th>name</th>
-              <th>height</th>
-              <th>mass</th>
-              <th>hair_color</th>
-              <th>skin_color</th>
-              <th>eye_color</th>
-              <th>birth_year</th>
+              <th>Name</th>
+              <th>Height (cm)</th>
+              <th>Mass (kg)</th>
+              <th>Hair Color</th>
+              <th>Skin Color</th>
+              <th>Eye Color</th>
+              <th>Birth Year</th>
             </tr>
           </thead>
           <tbody>
