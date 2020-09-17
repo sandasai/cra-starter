@@ -2,17 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import logo from './logo.svg'
 import RectangleButton from './RectangleButton'
+import SwSelectInput from './SwSelectInput'
+import SwNumericInput from './SwNumericInput'
 import './App.css'
 
-type Gender = 'Male' | 'Female' | 'Droid'
-
 const PeopleLocalStorageKey = 'swpeople'
-
-const attributeMapping: Record<Gender, string> = {
-  Male: 'male',
-  Female: 'female',
-  Droid: 'n/a',
-}
 
 export interface ApiResult {
   count: number
@@ -30,7 +24,7 @@ export interface Person {
   skin_color: string
   eye_color: string
   birth_year: string
-  gender: 'male' | 'female'
+  gender: string
   homeworld: string
   films: string[]
   species: string[]
@@ -40,6 +34,8 @@ export interface Person {
   edited: Date
   url: string
 }
+
+type FilterableAttribute = 'hair_color' | 'skin_color' | 'eye_color' | 'birth_year' | 'gender'
 
 const numberTolerance = 8
 
@@ -58,6 +54,18 @@ const stringCompareFilter = (persons: Person[], attribute: keyof Person, value: 
   return persons.filter(person => {
     return person[attribute] === value
   })
+}
+
+const getOptionsForAttribute = (persons: Person[], attribute: FilterableAttribute): string[] => {
+  const options: any = {}
+  persons.forEach(person => {
+    const value = person[attribute]
+    options[value] = true
+  })
+
+  const sortedOptions = Object.keys(options).sort()
+  sortedOptions.unshift('')
+  return sortedOptions
 }
 
 function App() {
@@ -95,10 +103,11 @@ function App() {
     fetchPeople()
   }, [])
 
+  console.log(getOptionsForAttribute(people, 'hair_color'))
+
   function handleFormSubmit(formData: any, e: any) {
     e.preventDefault()
     console.log(formData)
-    const inputGender: Gender = formData['gender']
 
     let filtered: Person[] = people
 
@@ -122,53 +131,35 @@ function App() {
     <div className="container mx-4">
       <h1 className="is-size-1">Star Wars Cosplay Selector</h1>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className="field">
-          <label className="label">Gender</label>
-          <div className="control">
-            <div className="select">
-              <select name="gender" ref={register}>
-                <option>male</option>
-                <option>female</option>
-                <option>n/a</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        <SwSelectInput
+          label="Gender"
+          name="gender"
+          options={getOptionsForAttribute(people, 'gender')}
+          ref={register}
+        />
 
-        <div className="field">
-          <label className="label">Height (cm)</label>
-          <div className="control">
-            <input className="input" name="height" type="number" ref={register} min={0} />
-          </div>
-        </div>
+        <SwNumericInput label="Height (cm)" name="height" ref={register} />
 
-        <div className="field">
-          <label className="label">Mass (kg)</label>
-          <div className="control">
-            <input className="input" name="mass" type="number" ref={register} />
-          </div>
-        </div>
+        <SwNumericInput label="Mass (kg)" name="mass" ref={register} />
 
-        <div className="field">
-          <label className="label">hair_color</label>
-          <div className="control">
-            <input className="input" name="hair_color" type="string" ref={register} />
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">skin_color</label>
-          <div className="control">
-            <input className="input" name="skin_color" type="string" ref={register} />
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">eye_color</label>
-          <div className="control">
-            <input className="input" name="eye_color" type="string" ref={register} />
-          </div>
-        </div>
+        <SwSelectInput
+          label="Hair Color"
+          name="hair_color"
+          options={getOptionsForAttribute(people, 'hair_color')}
+          ref={register}
+        />
+        <SwSelectInput
+          label="Skin Color"
+          name="skin_color"
+          options={getOptionsForAttribute(people, 'skin_color')}
+          ref={register}
+        />
+        <SwSelectInput
+          label="Eye Color"
+          name="eye_color"
+          options={getOptionsForAttribute(people, 'eye_color')}
+          ref={register}
+        />
 
         <button className="button mb-4 is-primary" type="submit">
           Submit
