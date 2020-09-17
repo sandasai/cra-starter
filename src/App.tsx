@@ -108,14 +108,11 @@ function App() {
 
   function handleFormSubmit(formData: any, e: any) {
     e.preventDefault()
-    console.log(formData)
-
     let filtered: Person[] = people
 
     const keys = Object.keys(formData)
     keys.forEach(key => {
       if (!formData[key]) {
-        console.log('here', key)
         return
       }
       if (key === 'height' || key === 'mass') {
