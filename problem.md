@@ -9,13 +9,13 @@ Your friends are about to make some Star Wars costumes for Comic Con (because co
 2) Allows for input to filter the results down to specific characters based on attributes (gender: male and height: 6’3”)
 
 - Filter for more attributes X
-- Filter attributes dynamically
-- Required vs Not required inputs
+- Filter attributes dynamically X
+- Required vs Not required inputs X
 - Values for select options are generated from data set OR string comparison with text field
 
 3) Displays the results in a tabular format that are decently close to what the user requested (height 6’1” - 6’5”)
 
-- Style tabluar format better
+- Style tabluar format better X
 
 Constraints:
 

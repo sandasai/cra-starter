@@ -60,16 +60,6 @@ const stringCompareFilter = (persons: Person[], attribute: keyof Person, value: 
   })
 }
 
-// const attributeFilters = {
-//   name: defaultFilter,
-//   height:
-//   mass:
-//   hair_color: defaultFilter,
-//   skin_color: defaultFilter,
-//   eye_color: defaultFilter,
-//   gender: defaultFilter,
-// }
-
 function App() {
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
@@ -107,13 +97,17 @@ function App() {
 
   function handleFormSubmit(formData: any, e: any) {
     e.preventDefault()
-
+    console.log(formData)
     const inputGender: Gender = formData['gender']
 
     let filtered: Person[] = people
 
     const keys = Object.keys(formData)
     keys.forEach(key => {
+      if (!formData[key]) {
+        console.log('here', key)
+        return
+      }
       if (key === 'height' || key === 'mass') {
         filtered = numericCompareFilter(filtered, key as keyof Person, formData[key])
       } else {
@@ -125,27 +119,69 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <label htmlFor="gender">Choose a gender:</label>
-          <select name="gender" ref={register}>
-            <option>male</option>
-            <option>female</option>
-            <option>n/a</option>
-          </select>
-          <label>Choose a height:</label>
-          <input name="height" type="number" ref={register} />
-          <input name="mass" type="number" ref={register} />
+    <div className="container mx-4">
+      <h1 className="is-size-1">Star Wars Cosplay Selector</h1>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <div className="field">
+          <label className="label">Gender</label>
+          <div className="control">
+            <div className="select">
+              <select name="gender" ref={register}>
+                <option>male</option>
+                <option>female</option>
+                <option>n/a</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-          <button type="submit">Submit</button>
-        </form>
-        <div>
-          <table
-            style={{
-              width: '100%',
-            }}
-          >
+        <div className="field">
+          <label className="label">Height (cm)</label>
+          <div className="control">
+            <input className="input" name="height" type="number" ref={register} min={0} />
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label">Mass (kg)</label>
+          <div className="control">
+            <input className="input" name="mass" type="number" ref={register} />
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label">hair_color</label>
+          <div className="control">
+            <input className="input" name="hair_color" type="string" ref={register} />
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label">skin_color</label>
+          <div className="control">
+            <input className="input" name="skin_color" type="string" ref={register} />
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label">eye_color</label>
+          <div className="control">
+            <input className="input" name="eye_color" type="string" ref={register} />
+          </div>
+        </div>
+
+        <button className="button mb-4 is-primary" type="submit">
+          Submit
+        </button>
+      </form>
+      <div>
+        <table
+          style={{
+            width: '100%',
+          }}
+          className="table"
+        >
+          <thead>
             <tr>
               <th>name</th>
               <th>height</th>
@@ -155,9 +191,11 @@ function App() {
               <th>eye_color</th>
               <th>birth_year</th>
             </tr>
+          </thead>
+          <tbody>
             {filteredPeople.map(person => {
               return (
-                <tr>
+                <tr key={person.name}>
                   <td>{person['name']}</td>
                   <td>{person['height']}</td>
                   <td>{person['mass']}</td>
@@ -168,9 +206,9 @@ function App() {
                 </tr>
               )
             })}
-          </table>
-        </div>
-      </header>
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
