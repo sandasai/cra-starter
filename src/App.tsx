@@ -64,7 +64,12 @@ const getOptionsForAttribute = (persons: Person[], attribute: FilterableAttribut
   const options: any = {}
   persons.forEach(person => {
     const value = person[attribute]
-    options[value] = true
+
+    // some options can be comma delimited
+    const parsedOptions = value.split(', ')
+    parsedOptions.forEach(parsedOption => {
+      options[parsedOption] = true
+    })
   })
 
   const sortedOptions = Object.keys(options).sort()
@@ -125,8 +130,12 @@ function App() {
     setFilteredPeople(filtered)
   }
 
+  function handleReset() {
+    setFilteredPeople([])
+  }
+
   return (
-    <div className="container mx-4">
+    <div className="container mx-auto">
       <h1 className="is-size-1">Star Wars Cosplay Selector</h1>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <SwSelectInput
@@ -159,9 +168,15 @@ function App() {
           ref={register}
         />
 
-        <button className="button mb-4 is-primary" type="submit">
-          Submit
-        </button>
+        <div className="mb-4">
+          <button className="button mr-4 is-primary" type="submit">
+            Submit
+          </button>
+
+          <button className="button is-secondary" type="reset" onClick={handleReset}>
+            Reset
+          </button>
+        </div>
       </form>
       <div>
         <table
@@ -173,6 +188,7 @@ function App() {
           <thead>
             <tr>
               <th>Name</th>
+              <th>Gender</th>
               <th>Height (cm)</th>
               <th>Mass (kg)</th>
               <th>Hair Color</th>
@@ -186,6 +202,7 @@ function App() {
               return (
                 <tr key={person.name}>
                   <td>{person['name']}</td>
+                  <td>{person['gender']}</td>
                   <td>{person['height']}</td>
                   <td>{person['mass']}</td>
                   <td>{person['hair_color']}</td>
